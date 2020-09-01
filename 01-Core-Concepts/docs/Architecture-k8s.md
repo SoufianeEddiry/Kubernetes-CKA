@@ -1,4 +1,4 @@
 # L'Architecture d'un Cluster Kubernetes :
 
-![k8sarch](../img/k8sarch.png)
+![k8sarch](../images/k8sarch.png)
 
