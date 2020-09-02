@@ -1,16 +1,17 @@
 # Installation d'un Cluster Kubernetes via kubeadm
-Follow this documentation to set up a Kubernetes cluster on __Ubuntu 20.04 LTS__.
+Suivez cette documentation pour configurer un cluster Kubernetes sur __Ubuntu 18.04 LTS__.
 
-This documentation guides you in setting up a cluster with one master node and one worker node.
+Cette documentation vous guide dans la configuration d'un cluster avec un nœud master et un nœud worker.
 
-## Assumptions
+## Configuration
 |Role|FQDN|IP|OS|RAM|CPU|
 |----|----|----|----|----|----|
 |Master|kmaster.example.com|172.16.16.100|Ubuntu 18.04|2G|2|
 |Worker|kworker.example.com|172.16.16.101|Ubuntu 18.04|2G|1|
 
-## Au niveau du Master et du Worker
-Perform all the commands as root user unless otherwise specified
+## Au niveau des noeuds master et worker
+Exécutez toutes les commandes en tant qu'utilisateur root sauf indication contraire
+
 ##### Désactiver le firewall
 ```
 ufw disable
@@ -19,7 +20,7 @@ ufw disable
 ```
 swapoff -a; sed -i '/swap/d' /etc/fstab
 ```
-##### Mettre á jour les paramétres sysctl pour kubernetes
+##### Mettre á jour les paramétres sysctl suivant les recommandations kubernetes
 ```
 cat >>/etc/sysctl.d/kubernetes.conf<<EOF
 net.bridge.bridge-nf-call-ip6tables = 1
@@ -51,7 +52,7 @@ Update the below command with the ip address of kmaster
 ```
 kubeadm init --apiserver-advertise-address=172.16.16.100 --pod-network-cidr=192.168.0.0/16
 ```
-##### Deployer le réseau Calico
+##### Déployer le réseau Calico
 ```
 kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://docs.projectcalico.org/v3.14/manifests/calico.yaml
 ```
@@ -61,8 +62,8 @@ kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://docs.projectca
 kubeadm token create --print-join-command
 ```
 ## Au niveau du Worker
-##### Rejoindre le Cluster
-Use the output from __kubeadm token create__ command in previous step from the master server and run here.
+##### Joindre le Cluster
+Utilisez l'output de la commande __kubeadm token create__ à l'étape précédente à partir du serveur master et exécutez-la ici.
 
 ## Vérification du Cluster
 ##### Afficher l'état des noeuds du Cluster
