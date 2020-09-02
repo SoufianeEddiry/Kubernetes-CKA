@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+ENV['VAGRANT_NO_PARALLEL'] = 'yes'
+
+Vagrant.configure(2) do |config|
+
+    config.vm.define "kmaster" do |node|
+      node.vm.box = "bento/ubuntu-18.04"
+      node.vm.hostname = "kmaster.example.com"
+      node.vm.network "private_network", ip: "172.16.16.100"
+      node.vm.provider "virtualbox" do |v|
+        v.name = "kmaster"
+        v.customize ["modifyvm", :id, "--ioapic", "on"  ]
+        v.customize ["modifyvm", :id, "--cpus"  , "2"   ]
+        v.customize ["modifyvm", :id, "--memory", "2048"]
+      end
+      node.vm.provision "shell", path: "bootstrap_ubuntu.sh"
+    end
+
+   config.vm.define "kworker" do |node|
+      node.vm.box = "bento/ubuntu-18.04"
+      node.vm.hostname = "kworker.example.com"
+      node.vm.network "private_network", ip: "172.16.16.101"
+      node.vm.provider "virtualbox" do |v|
+        v.name = "kworker"
+        v.customize ["modifyvm", :id, "--cpus"  , "2"   ]
+        v.customize ["modifyvm", :id, "--memory", "2048"]
+        v.customize ["modifyvm", :id, "--ioapic", "on"]
+        end
+      node.vm.provision "shell", path: "bootstrap_ubuntu.sh"
+    end
+end
